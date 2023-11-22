@@ -9,11 +9,36 @@ const createUserInDB = async (userInfo: TUser) => {
     const result = await User.create(userInfo)
     return result
 }
-const getAllUsersFromDB = async () => {
+const getAllUsersFromDB= async () => {
     const result = await User.find()
     return result
 }
+
+const getSingleUserFromDB = async (userId: number) => { 
+    const result = await User.findOne({ userId })
+    if (result === null) {
+        throw new Error("User not found")
+    }
+    return result
+}
+
+const updateSingleUserFromDB = async (updatedDoc: any,userId:number) => {
+    const filter={userId}
+    const options = { upsert: true };
+   
+    const updateDoc = {
+        $set: updatedDoc
+      };
+    const result = await User.updateOne(filter, updateDoc, options);
+    if (result.matchedCount !== 1 ) {
+        throw new Error("User not found")
+    }
+    return result
+}
+
 export const UserService = {
     createUserInDB,
-    getAllUsersFromDB
+    getAllUsersFromDB,
+    getSingleUserFromDB,
+    updateSingleUserFromDB
 }
