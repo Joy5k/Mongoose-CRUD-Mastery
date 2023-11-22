@@ -3,12 +3,11 @@ import { User } from "./user.model";
 import { TUser } from "./user.interface";
 
 const createUserInDB = async (userInfo: TUser) => { 
-    const user = new User(userInfo);
-    if (await user.isUserExists(userInfo.userId)) {
-        throw new Error("User already exists")
+    if (await User.isUserExists(userInfo.userId)) {
+        throw new Error("User ALready Exists")
     }
-    const result = await user.save();
-    return result;
+    const result = await User.create(userInfo)
+    return result
 }
 export const UserService = {
     createUserInDB,
