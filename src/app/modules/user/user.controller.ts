@@ -6,9 +6,7 @@ const createUser = async (req:Request, res:Response) => {
     try {
         const userData = req.body
         const zodparser= userValidationSchema.parse(userData)
-
         const result = await UserService.createUserInDB(zodparser);
-        console.log(result);
 
     res.status(200).json({
         success: true,
@@ -22,7 +20,23 @@ const createUser = async (req:Request, res:Response) => {
           Result: error,
         });  }
 }
+const getAllUsers = async (req:Request, res:Response) => {
+    try {
+        const result = await UserService.getAllUsersFromDB()
+        res.status(200).json({
+            success: true,
+            message: "Users fetched successfully!",
+            data:result
+        })
+    } catch (error:any) {
+        res.status(500).json({
+          success: false,
+          "message": "User not found",
+          Result: error,
+        });  }
+}
 
 export const userController = {
     createUser,
+    getAllUsers
 }

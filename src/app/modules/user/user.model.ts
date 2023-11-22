@@ -53,7 +53,8 @@ userSchema.pre('save', async function (next) {
   next()
  })
 userSchema.post('save', function (doc, next) {
-  doc.password = "";
+    console.log('%s has been deleted', doc._id);
+ doc.password
   next()
 
 })
