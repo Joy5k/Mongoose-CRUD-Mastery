@@ -1,12 +1,16 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Application, Request, Response } from "express";
 const app: Application = express();
 import cors from 'cors';
-const port = 3000
-app.use(express.json())
-app.use(cors())
+import { UserRoute } from "./app/modules/user/user.route";
 
-app.get('/', (req:Request, res:Response) => {
-  res.send('Hello World!')
-})
+app.use(express.json());
+app.use(cors());
 
-export default app
+app.use("/api/users",UserRoute)
+app.get("/", (req: Request, res: Response) => {
+  const a = 10;
+
+  res.send(a);
+});
+
+export default app;
