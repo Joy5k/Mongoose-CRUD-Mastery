@@ -22,23 +22,32 @@ const getSingleUserFromDB = async (userId: number) => {
     return result
 }
 
-const updateSingleUserFromDB = async (updatedDoc: any,userId:number) => {
-    const filter={userId}
+const updateSingleUserFromDB = async (updatedDoc: any, userId: number) => {
+ 
+        const filter={userId}
     const options = { upsert: true };
    
     const updateDoc = {
         $set: updatedDoc
       };
     const result = await User.updateOne(filter, updateDoc, options);
-    if (result.matchedCount !== 1 ) {
+    if (result.matchedCount !== 1) {
         throw new Error("User not found")
     }
     return result
 }
-
+const deleteSingleUserFromDB = async (userId: number)=>{
+    const query={userId}
+    const result = await User.deleteOne(query)
+    if (result.deletedCount !== 1 && result.acknowledged !== false) {
+        throw new Error("User not found")
+    }
+    return result
+}
 export const UserService = {
     createUserInDB,
     getAllUsersFromDB,
     getSingleUserFromDB,
-    updateSingleUserFromDB
+    updateSingleUserFromDB,
+    deleteSingleUserFromDB
 }
