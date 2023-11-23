@@ -12,11 +12,13 @@ const addressValidationSchema = z.object({
     city: z.string(),
     country: z.string()
 })
-const ordersValidationSchema = z.object({
-    productName: z.string(),
-    price: z.number(),
-    quantity :z.number()
-})
+const ordersValidationSchema = z.array(
+    z.object({
+      productName: z.string(),
+      price: z.number(),
+      quantity: z.number(),
+    })
+  );
 const userValidationSchema = z.object({
     userId: z.number(),
     username:z.string(),

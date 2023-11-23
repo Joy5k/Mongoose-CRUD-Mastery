@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
 import { UserService } from "./user.services";
-import userValidationSchema from "./user.validation";
 
 const createUser = async (req:Request, res:Response) => {
     try {
         const userData = req.body
-        const zodparser= userValidationSchema.parse(userData)
-        const result = await UserService.createUserInDB(zodparser);
+        console.log(userData);
+        const result = await UserService.createUserInDB(userData);
 
     res.status(200).json({
         success: true,
@@ -86,7 +85,7 @@ const deleteSingleUser = async (req: Request, res: Response) => {
    try {
     const id = req.params.userId;
     const userId = parseFloat(id);
-    const result = await UserService.deleteSingleUserFromDB(userId);
+    await UserService.deleteSingleUserFromDB(userId);
     res.status(200).json({
             success: true,
             message: "User deleted successfully!",
@@ -103,6 +102,19 @@ const deleteSingleUser = async (req: Request, res: Response) => {
 })
    }
 }
+const addOrder = async (req: Request, res: Response) => {
+    const id = req.params.userId;
+    const userId=parseFloat(id)
+    const order = req.body
+    console.log(id,order);
+     await UserService.addProductToDB(userId, order)
+    res.status(200).json({
+    success: true,
+    message: "Order created successfully!",
+    data: null,
+ 
+    })
+}
 
 
 export const userController = {
@@ -110,5 +122,6 @@ export const userController = {
     getAllUsers,
     getSingleUser,
     updateSingleUser,
-    deleteSingleUser
+    deleteSingleUser,
+    addOrder
 }

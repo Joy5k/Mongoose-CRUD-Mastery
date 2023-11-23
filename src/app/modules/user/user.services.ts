@@ -44,10 +44,21 @@ const deleteSingleUserFromDB = async (userId: number)=>{
     }
     return result
 }
+
+const addProductToDB = async (id:number,productData:Record<string,never>) => {
+    const filter = { userId: id }
+    const options = { upsert: true };
+    const updateDoc = {
+        $push: productData
+    };
+    const result = await User.updateOne(filter, updateDoc, options)
+    return result;
+}
 export const UserService = {
     createUserInDB,
     getAllUsersFromDB,
     getSingleUserFromDB,
     updateSingleUserFromDB,
-    deleteSingleUserFromDB
+    deleteSingleUserFromDB,
+    addProductToDB
 }
