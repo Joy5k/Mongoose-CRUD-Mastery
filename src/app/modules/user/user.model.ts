@@ -21,7 +21,11 @@ const orderSchema = new Schema({
 
 const userSchema = new Schema<TUser,UserModel>({
     userId: { type: Number, require: true,unique: true },
-    username: { type: String, require: true ,unique: true },
+    username: {
+        type: String,
+        require:true,
+        unique: true
+    },
     password: { type: String, require: true },
     fullName: fullNameSchema,
     age: { type: Number, require: true },
@@ -51,12 +55,26 @@ userSchema.pre('save', async function (next) {
     const user=this
    user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds))
   next()
- })
+})
+ 
  userSchema.set('toJSON', {
-    transform: function (doc, ret) {
+     transform: function (doc, ret) {
       delete ret.password;
       return ret;
     }
-  });
+ });
+  
+ userSchema.methods.toJSONCustom = function (context:any) {
+    const ret = this.toJSON();
+    console.log(context,"This is Context");
+    if (context === 'single') {
+      delete ret.password;
+    } else if (context === 'all') {
+      delete ret.fieldToRemove1;
+      delete ret.fieldToRemove2;
+    }
+  
+    return ret;
+  };
 
 export const User =model<TUser,UserModel>("User",userSchema)

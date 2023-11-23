@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import { UserService } from "./user.services";
+import userValidationSchema from "./user.validation";
 
 const createUser = async (req:Request, res:Response) => {
     try {
         const userData = req.body
-        console.log(userData);
-        const result = await UserService.createUserInDB(userData);
+        const zodparser=userValidationSchema.parse(userData)
+        const result = await UserService.createUserInDB(zodparser);
 
     res.status(200).json({
         success: true,
@@ -108,7 +109,6 @@ const addOrder = async (req: Request, res: Response) => {
     const id = req.params.userId;
     const userId=parseFloat(id)
     const order = req.body
-    console.log(id,order);
      await UserService.addProductToDB(userId, order)
     res.status(200).json({
     success: true,

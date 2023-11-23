@@ -10,7 +10,7 @@ const createUserInDB = async (userInfo: TUser) => {
     return result
 }
 const getAllUsersFromDB= async () => {
-    const result = await User.find()
+    const result = await User.find().select("username fullName age email address ")
     return result
 }
 
@@ -23,7 +23,6 @@ const getSingleUserFromDB = async (userId: number) => {
 }
 
 const updateSingleUserFromDB = async (updatedDoc: any, userId: number) => {
- 
         const filter={userId}
     const options = { upsert: true };
    
@@ -38,6 +37,8 @@ const updateSingleUserFromDB = async (updatedDoc: any, userId: number) => {
 
     return updatedUser
 }
+
+
 const deleteSingleUserFromDB = async (userId: number)=>{
     const query={userId}
     const result = await User.deleteOne(query)
@@ -56,6 +57,9 @@ const addProductToDB = async (id:number,productData:Record<string,never>) => {
     const result = await User.updateOne(filter, updateDoc, options)
     return result;
 }
+
+
+
 export const UserService = {
     createUserInDB,
     getAllUsersFromDB,
