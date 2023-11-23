@@ -62,8 +62,29 @@ const addProductToDB = async (id:number,productData:Record<string,never>) => {
     return result
    
 }
+const getAllOrderOfSingleUserFromDB = async(id:number) => {
+    const userId = { userId: id }
+    const result = await User.findOne(userId).select("orders")
+    console.log(result,"check result",userId);
+    // if (result!==null&& result.matchedCount !== 1) {
+    //     throw new Error("User not found")
+    // }
+    return result
+}
 
-
+const calTotalPriceFromUserOrders = async (userId: number) => {
+    const result = await User.findOne({ userId }).select("orders")
+       if (result!==undefined&&result!==null) {
+           console.log(result);
+           let totalPrice=0
+           for (const order of result.orders ??[]) {
+               totalPrice+=order.price*order.quantity
+           }
+           return totalPrice
+    }
+    else{throw new Error("User not found")}
+  
+}
 
 export const UserService = {
     createUserInDB,
@@ -71,5 +92,7 @@ export const UserService = {
     getSingleUserFromDB,
     updateSingleUserFromDB,
     deleteSingleUserFromDB,
-    addProductToDB
+    addProductToDB,
+    getAllOrderOfSingleUserFromDB,
+    calTotalPriceFromUserOrders
 }
