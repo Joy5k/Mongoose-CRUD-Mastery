@@ -50,6 +50,7 @@ userSchema.statics.isUserExists = async function (userId: number) {
     const existingUser=await User.findOne({userId})
     return existingUser
 }
+
 userSchema.pre('save', async function (next) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const user=this
@@ -64,17 +65,5 @@ userSchema.pre('save', async function (next) {
     }
  });
   
- userSchema.methods.toJSONCustom = function (context:any) {
-    const ret = this.toJSON();
-    console.log(context,"This is Context");
-    if (context === 'single') {
-      delete ret.password;
-    } else if (context === 'all') {
-      delete ret.fieldToRemove1;
-      delete ret.fieldToRemove2;
-    }
-  
-    return ret;
-  };
 
 export const User =model<TUser,UserModel>("User",userSchema)

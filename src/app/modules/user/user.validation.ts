@@ -22,7 +22,8 @@ const ordersValidationSchema = z.array(
   );
 const userValidationSchema = z.object({
     userId: z.number(),
-    username:z.string().max(20,{message:"username can not be more than 20 characters"}),
+  username: z.string()
+    .max(20, { message: "username can not be more than 20 characters" }),
     password: z.string(),
     fullName: fullNameValidationSchema,
     age: z.number(),

@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
 import { UserService } from "./user.services";
 import userValidationSchema from "./user.validation";
+import { ZodError } from "zod";
 
 const createUser = async (req:Request, res:Response) => {
     try {
         const userData = req.body
-        const zodparser=userValidationSchema.parse(userData)
+        const zodparser = userValidationSchema.parse(userData)
+        console.log(zodparser);
         const result = await UserService.createUserInDB(zodparser);
 
     res.status(200).json({
@@ -13,12 +15,25 @@ const createUser = async (req:Request, res:Response) => {
         message: "User created successfully!",
         data:result
     })
-    } catch (error:any) {
-        res.status(500).json({
-          success: false,
-          message:error.message|| 'Something went wrong',
-          Result: error,
-        });  }
+    } catch (error: any) {
+        if (error instanceof ZodError) {
+            console.error('Validation failed:', error.errors);
+            res.status(400).json({
+                success: false,
+                message:error.errors[0].message,
+                errors: error.errors,
+              });
+
+          } else {
+            res.status(500).json({
+                success: false,
+                message:error.message|| 'Something went wrong',
+                Result: error,
+              });
+      
+          }
+      
+    }
 }
 
 const getAllUsers = async (req:Request, res:Response) => {
