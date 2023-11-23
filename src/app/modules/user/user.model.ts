@@ -52,10 +52,11 @@ userSchema.pre('save', async function (next) {
    user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds))
   next()
  })
-userSchema.post('save', async function (doc, next) {
- doc.password=""
-  next()
-
-})
+ userSchema.set('toJSON', {
+    transform: function (doc, ret) {
+      delete ret.password;
+      return ret;
+    }
+  });
 
 export const User =model<TUser,UserModel>("User",userSchema)

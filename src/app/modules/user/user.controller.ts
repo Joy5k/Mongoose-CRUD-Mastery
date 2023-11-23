@@ -81,6 +81,7 @@ const updateSingleUser = async (req: Request, res: Response) => {
     })
   }
 }
+
 const deleteSingleUser = async (req: Request, res: Response) => {
    try {
     const id = req.params.userId;
@@ -102,6 +103,7 @@ const deleteSingleUser = async (req: Request, res: Response) => {
 })
    }
 }
+
 const addOrder = async (req: Request, res: Response) => {
     const id = req.params.userId;
     const userId=parseFloat(id)
