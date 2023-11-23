@@ -15,7 +15,7 @@ const getAllUsersFromDB= async () => {
 }
 
 const getSingleUserFromDB = async (userId: number) => { 
-    const result = await User.findOne({ userId })
+    const result = await User.findOne({ userId }).select("-orders -password")
     if (result === null) {
         throw new Error("User not found")
     }
@@ -29,11 +29,11 @@ const updateSingleUserFromDB = async (updatedDoc: any, userId: number) => {
     const updateDoc = {
         $set: updatedDoc
       };
-    const result = await User.updateOne(filter, updateDoc, options);
+    const result = await User.updateOne(filter, updateDoc, options)
     if (result.matchedCount !== 1) {
         throw new Error("User not found")
     }
-    const updatedUser = await User.find(filter);
+    const updatedUser = await User.find(filter).select("-orders");
 
     return updatedUser
 }
@@ -52,10 +52,15 @@ const addProductToDB = async (id:number,productData:Record<string,never>) => {
     const filter = { userId: id }
     const options = { upsert: true };
     const updateDoc = {
-        $push: productData
+        $push:{orders: productData}
     };
-    const result = await User.updateOne(filter, updateDoc, options)
-    return result;
+    
+        const result = await User.updateOne(filter, updateDoc, options)
+        if (result.matchedCount !== 1) {
+            throw new Error("User not found")
+        }
+    return result
+   
 }
 
 

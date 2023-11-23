@@ -7,7 +7,6 @@ const createUser = async (req:Request, res:Response) => {
     try {
         const userData = req.body
         const zodparser = userValidationSchema.parse(userData)
-        console.log(zodparser);
         const result = await UserService.createUserInDB(zodparser);
 
     res.status(200).json({
@@ -17,7 +16,6 @@ const createUser = async (req:Request, res:Response) => {
     })
     } catch (error: any) {
         if (error instanceof ZodError) {
-            console.error('Validation failed:', error.errors);
             res.status(400).json({
                 success: false,
                 message:error.errors[0].message,
@@ -121,9 +119,11 @@ const deleteSingleUser = async (req: Request, res: Response) => {
 }
 
 const addOrder = async (req: Request, res: Response) => {
-    const id = req.params.userId;
+    try {
+        const id = req.params.userId;
     const userId=parseFloat(id)
-    const order = req.body
+        const order = req.body
+        console.log(order,'order data from useController');
      await UserService.addProductToDB(userId, order)
     res.status(200).json({
     success: true,
@@ -131,6 +131,17 @@ const addOrder = async (req: Request, res: Response) => {
     data: null,
  
     })
+    } catch (error) {
+        res.status(404).json({
+            success: false,
+            message: "User not found",
+            error: {
+                code: 404,
+                description: "User not found!"
+            }
+         
+            })
+    }
 }
 
 
