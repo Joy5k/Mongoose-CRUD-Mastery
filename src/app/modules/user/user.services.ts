@@ -34,7 +34,9 @@ const updateSingleUserFromDB = async (updatedDoc: any, userId: number) => {
     if (result.matchedCount !== 1) {
         throw new Error("User not found")
     }
-    return result
+    const updatedUser = await User.find(filter);
+
+    return updatedUser
 }
 const deleteSingleUserFromDB = async (userId: number)=>{
     const query={userId}
