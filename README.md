@@ -1,4 +1,4 @@
-install this packages. run the command 
+install these packages. run the command
 
  ```
 npm i express mongoose cors dotenv zod @types/express @types/bcrypt @types/cors
@@ -23,8 +23,10 @@ npx eslint --init
 also you can install the lint for check the project error
 
 
-``` npm run lint --fix
-  ```` 
+```
+ npm run lint --fix
+
+ ```` 
  
 
 In this project I have used express,mongodb, mongoose, cors, dotenv,typescript.
