@@ -8,9 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_model_1 = require("./user.model");
+const config_1 = __importDefault(require("../../config"));
 const createUserInDB = (userInfo) => __awaiter(void 0, void 0, void 0, function* () {
     if (yield user_model_1.User.isUserExists(userInfo.userId)) {
         throw new Error("User ALready Exists");
@@ -32,6 +37,10 @@ const getSingleUserFromDB = (userId) => __awaiter(void 0, void 0, void 0, functi
 const updateSingleUserFromDB = (updatedDoc, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const filter = { userId };
     const options = { upsert: true };
+    if (updatedDoc.password) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        updatedDoc.password = yield bcrypt_1.default.hash(updatedDoc.password, Number(config_1.default.bcrypt_salt_rounds));
+    }
     const updateDoc = {
         $set: updatedDoc,
     };

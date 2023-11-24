@@ -1,5 +1,7 @@
+import bcrypt from "bcrypt";
 import { User } from "./user.model";
 import { TUser } from "./user.interface";
+import config from '../../config';
 
 const createUserInDB = async (userInfo: TUser) => {
   if (await User.isUserExists(userInfo.userId)) {
@@ -26,7 +28,13 @@ const getSingleUserFromDB = async (userId: number) => {
 const updateSingleUserFromDB = async (updatedDoc: any, userId: number) => {
   const filter = { userId };
   const options = { upsert: true };
-
+  if (updatedDoc.password) {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
+      updatedDoc.password = await bcrypt.hash(
+        updatedDoc.password,
+        Number(config.bcrypt_salt_rounds),
+      )
+  }
   const updateDoc = {
     $set: updatedDoc,
   };
