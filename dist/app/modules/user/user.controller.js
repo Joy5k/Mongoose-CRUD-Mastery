@@ -154,7 +154,6 @@ const addOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 const getAllOrderOfSingleUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.userId;
     const userId = Number(id);
-    console.log(id, userId, "controller");
     const result = yield user_services_1.UserService.getAllOrderOfSingleUserFromDB(userId);
     res.status(200).json({
         success: true,
@@ -170,7 +169,7 @@ const calTotalPrice = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(200).json({
             success: true,
             message: "Total price calculated successfully!",
-            data: result,
+            data: { "totalPrice": result },
         });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }

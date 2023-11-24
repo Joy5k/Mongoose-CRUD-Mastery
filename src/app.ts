@@ -8,9 +8,8 @@ app.use(cors());
 
 app.use("/api/users", UserRoute);
 app.get("/", (req: Request, res: Response) => {
-  const a = 10;
-
-  res.send(a);
+  
+  res.send("The server is Running")
 });
 
 export default app;

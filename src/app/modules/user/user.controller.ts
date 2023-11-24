@@ -144,7 +144,6 @@ const addOrder = async (req: Request, res: Response) => {
 const getAllOrderOfSingleUser = async (req: Request, res: Response) => {
   const id = req.params.userId;
   const userId = Number(id);
-  console.log(id, userId, "controller");
   const result = await UserService.getAllOrderOfSingleUserFromDB(userId);
   res.status(200).json({
     success: true,
@@ -161,7 +160,7 @@ const calTotalPrice = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: "Total price calculated successfully!",
-      data: result,
+      data: { "totalPrice": result},
     });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {

@@ -65,17 +65,12 @@ const addProductToDB = (id, productData) => __awaiter(void 0, void 0, void 0, fu
 const getAllOrderOfSingleUserFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = { userId: id };
     const result = yield user_model_1.User.findOne(userId).select("orders");
-    console.log(result, "check result", userId);
-    // if (result!==null&& result.matchedCount !== 1) {
-    //     throw new Error("User not found")
-    // }
     return result;
 });
 const calTotalPriceFromUserOrders = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const result = yield user_model_1.User.findOne({ userId }).select("orders");
     if (result !== undefined && result !== null) {
-        console.log(result);
         let totalPrice = 0;
         for (const order of (_a = result.orders) !== null && _a !== void 0 ? _a : []) {
             totalPrice += order.price * order.quantity;
