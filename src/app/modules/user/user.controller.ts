@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { UserService } from "./user.services";
-import userValidationSchema from "./user.validation";
+import userValidationSchema, { ordersValidationSchema, updateUserValidationSchema } from "./user.validation";
 import { ZodError } from "zod";
 
 const createUser = async (req: Request, res: Response) => {
@@ -16,13 +16,24 @@ const createUser = async (req: Request, res: Response) => {
     });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error instanceof ZodError) {
+ if (error.code === 11000 && error.keyPattern.username === 1) {
+      res.status(400).json({
+        success: false,
+        message: `User already exists with username ---> ${error.keyValue.username} <---`,
+        error: {
+          code: 11000,
+          description: "Duplicate key error",
+        },
+      });
+    } 
+   else if (error instanceof ZodError) {
       res.status(400).json({
         success: false,
         message: error.errors[0].message,
         errors: error.errors,
       });
-    } else {
+    }
+    else {
       res.status(500).json({
         success: false,
         message: error.message || "Something went wrong",
@@ -54,7 +65,7 @@ const getSingleUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.userId;
     const userId = Number(id);
-    const result = await UserService.getSingleUserFromDB(userId);
+    const result = await UserService.getSingleUserFromDB(userId)
     res.status(200).json({
       success: true,
       message: "User fetched successfully!",
@@ -78,9 +89,9 @@ const updateSingleUser = async (req: Request, res: Response) => {
     const id = req.params.userId;
     const userId = Number(id);
     const updatedInfo = req.body;
-
+    const zodUserUpdateparser=updateUserValidationSchema.parse(updatedInfo)
     const result = await UserService.updateSingleUserFromDB(
-      updatedInfo,
+      zodUserUpdateparser,
       userId,
     );
     res.status(200).json({
@@ -89,6 +100,13 @@ const updateSingleUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
+    if (error instanceof ZodError) {
+      res.status(400).json({
+        success: false,
+        message: error.errors[0].message,
+        errors: error.errors,
+      });
+    }
     res.status(404).json({
       success: false,
       message: "User not found",
@@ -124,13 +142,21 @@ const addOrder = async (req: Request, res: Response) => {
     const id = req.params.userId;
     const userId = Number(id);
     const order = req.body;
-    await UserService.addProductToDB(userId, order);
+    const zodOrderParser=ordersValidationSchema.parse(order)
+    await UserService.addProductToDB(userId, zodOrderParser);
     res.status(200).json({
       success: true,
       message: "Order created successfully!",
       data: null,
     });
   } catch (error) {
+    if (error instanceof ZodError) {
+      res.status(400).json({
+        success: false,
+        message: error.errors[0].message,
+        errors: error.errors,
+      });
+    }
     res.status(404).json({
       success: false,
       message: "User not found",

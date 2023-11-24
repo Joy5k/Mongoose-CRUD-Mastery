@@ -1,24 +1,24 @@
 import bcrypt from "bcrypt";
 import { User } from "./user.model";
-import { TUser } from "./user.interface";
+import {TUser } from "./user.interface";
 import config from '../../config';
 
 const createUserInDB = async (userInfo: TUser) => {
   if (await User.isUserExists(userInfo.userId)) {
     throw new Error("User ALready Exists");
   }
-  const result = await User.create(userInfo);
+  const result = await User.create(userInfo)
   return result;
 };
 const getAllUsersFromDB = async () => {
   const result = await User.find().select(
-    "username fullName age email address ",
+    "username fullName age email address -_id",
   );
   return result;
 };
 
 const getSingleUserFromDB = async (userId: number) => {
-  const result = await User.findOne({ userId }).select("-orders -password");
+  const result = await User.findOne({ userId }).select("-orders -password -_id");
   if (result === null) {
     throw new Error("User not found");
   }
@@ -58,7 +58,11 @@ const deleteSingleUserFromDB = async (userId: number) => {
 
 const addProductToDB = async (
   id: number,
-  productData: Record<string, never>,
+  productData:{
+    productName: string;
+    price: number;
+    quantity: number;
+},
 ) => {
   const filter = { userId: id };
   const options = { upsert: true };
