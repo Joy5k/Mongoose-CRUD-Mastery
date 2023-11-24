@@ -169,7 +169,8 @@ const addOrder = async (req: Request, res: Response) => {
 };
 
 const getAllOrderOfSingleUser = async (req: Request, res: Response) => {
-  const id = req.params.userId;
+  try {
+    const id = req.params.userId;
   const userId = Number(id);
   const result = await UserService.getAllOrderOfSingleUserFromDB(userId);
   res.status(200).json({
@@ -177,6 +178,16 @@ const getAllOrderOfSingleUser = async (req: Request, res: Response) => {
     message: "Order fetched successfully!",
     data: result,
   });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: "User not found",
+      error: {
+        code: 404,
+        description: "User not found!",
+      },
+    });
+  }
 };
 
 const calTotalPrice = async (req: Request, res: Response) => {

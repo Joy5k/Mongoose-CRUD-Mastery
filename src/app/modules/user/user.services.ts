@@ -42,7 +42,7 @@ const updateSingleUserFromDB = async (updatedDoc: any, userId: number) => {
   if (result.matchedCount !== 1) {
     throw new Error("User not found");
   }
-  const updatedUser = await User.find(filter).select("-orders");
+  const updatedUser = await User.find(filter).select("-orders -_id");
 
   return updatedUser;
 };
@@ -79,6 +79,9 @@ const addProductToDB = async (
 const getAllOrderOfSingleUserFromDB = async (id: number) => {
   const userId = { userId: id };
   const result = await User.findOne(userId).select("orders");
+  if (result == null) { 
+    throw new Error("User not found")
+  }
   return result;
 };
 

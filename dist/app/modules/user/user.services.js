@@ -24,11 +24,11 @@ const createUserInDB = (userInfo) => __awaiter(void 0, void 0, void 0, function*
     return result;
 });
 const getAllUsersFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield user_model_1.User.find().select("username fullName age email address ");
+    const result = yield user_model_1.User.find().select("username fullName age email address -_id");
     return result;
 });
 const getSingleUserFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield user_model_1.User.findOne({ userId }).select("-orders -password");
+    const result = yield user_model_1.User.findOne({ userId }).select("-orders -password -_id");
     if (result === null) {
         throw new Error("User not found");
     }
